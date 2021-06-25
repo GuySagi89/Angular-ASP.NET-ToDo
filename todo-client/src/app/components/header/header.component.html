@@ -1,0 +1,17 @@
+<div class="app-title">
+  ToDo App
+</div>
+
+<div class="header-container">
+  <div routerLink='' routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [ngClass]="['clickable']">
+    Home
+  </div>
+
+  <div routerLink='/lists' routerLinkActive="active" [ngClass]="['clickable']">
+    Lists
+  </div>
+
+  <div routerLink='/items' routerLinkActive="active" [ngClass]="['clickable']">
+    Items
+  </div>
+</div>

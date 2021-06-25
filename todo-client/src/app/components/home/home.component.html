@@ -1,0 +1,38 @@
+<div class="container">
+
+
+  <div class="details-container">
+
+    <div [ngClass]="['title','detail-text']">
+      Todos app
+    </div>
+
+    <div [ngClass]="['author','detail-text']">
+      By Guy Sagi
+    </div>
+
+    <div [ngClass]="['date','detail-text']">
+      {{todaysDate | date:'dd/MM/YYYY'}}
+    </div>
+
+    <div class="button-container">
+
+      <button
+      (click)="navigateToEdit()"
+      >Create new list</button>
+      <button>View all lists</button>
+      <button>view all items</button>
+    </div>
+
+
+  </div>
+
+
+  <div class="detail-blocks-container">
+    <app-detail-block title='Lists' icon='list'></app-detail-block>
+    <app-detail-block title='Todo Items' icon='done_all'></app-detail-block>
+    <app-detail-block title='Active Items' icon='hourglass_bottom'></app-detail-block>
+  </div>
+
+
+</div>
