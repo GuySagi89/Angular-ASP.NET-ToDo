@@ -8,9 +8,9 @@ import { Component, Input, OnInit } from '@angular/core';
 export class DetailBlockComponent implements OnInit {
   constructor() {}
 
-  @Input() icon: string = 'check';
-  @Input() amount: number = 0;
-  @Input() title: string = '0';
+  @Input() icon!: string;
+  @Input() amount!: number;
+  @Input() title!:string;
 
   ngOnInit(): void {}
 }

@@ -1,0 +1,12 @@
+.container{
+  box-shadow: inset 0px 3px 3px 0px rgba(0,0,0,0.2);
+  padding: 15px;
+}
+
+.button-container{
+  padding: 10px
+}
+
+button{
+  margin: 10px;
+}

@@ -17,21 +17,17 @@
 
     <div class="button-container">
 
-      <button
-      (click)="navigateToEdit()"
-      >Create new list</button>
-      <button>View all lists</button>
-      <button>view all items</button>
+      <button mat-raised-button color="primary" (click)="goToNewList()">Create new list</button>
+      <button mat-raised-button color="primary" (click)="goToAllLists()">View all lists</button>
+      <button mat-raised-button color="primary" (click)="goToAllItems()">view all items</button>
     </div>
-
-
   </div>
 
 
   <div class="detail-blocks-container">
-    <app-detail-block title='Lists' icon='list'></app-detail-block>
-    <app-detail-block title='Todo Items' icon='done_all'></app-detail-block>
-    <app-detail-block title='Active Items' icon='hourglass_bottom'></app-detail-block>
+    <app-detail-block title='Lists' icon='list' [amount]='listsAmount'></app-detail-block>
+    <app-detail-block title='Todo Items' icon='done_all' [amount]="0"></app-detail-block>
+    <app-detail-block title='Active Items' icon='hourglass_bottom' [amount]="0"></app-detail-block>
   </div>
 
 

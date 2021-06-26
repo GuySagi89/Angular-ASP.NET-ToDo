@@ -1,0 +1,45 @@
+<mat-card class="details-container">
+
+  <form [formGroup]="todoForm" (ngSubmit)="saveForm()">
+
+    <div class="caption">
+      <h3>Enter list caption:</h3>
+      <mat-form-field>
+        <input formControlName="caption" matInput placeholder="Caption">
+      </mat-form-field>
+    </div>
+
+    <div class="description">
+      <h3>Describe your list:</h3>
+      <mat-form-field>
+        <textarea formControlName="description" matInput placeholder="Description"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="icon">
+      <h3>Choose list icon:</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Icon</mat-label>
+        <mat-select formControlName="icon">
+          <mat-option *ngFor="let icon of icons" [value]="icon.value">
+            <mat-icon>{{icon.viewValue}}</mat-icon>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="color">
+      <h3>Choose list color:</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Color</mat-label>
+        <mat-select formControlName="color">
+          <mat-option *ngFor="let color of colors" [value]="color.value" [style.color]="color.viewValue|lowercase">
+            {{color.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary">Save</button>
+  </form>
+</mat-card>

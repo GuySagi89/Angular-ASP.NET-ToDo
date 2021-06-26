@@ -1,3 +1,13 @@
 <div class="container">
 
+  <app-list-card
+  *ngFor="let list of todoLists"
+  [icon]="list.icon"
+  [title]="list.caption"
+  [color]="list.color"
+  (click)="goToViewList(list.id)"
+  ></app-list-card>
+
+  <app-list-card (click)="goToNewList()" icon='add' title='...New'></app-list-card>
+
 </div>

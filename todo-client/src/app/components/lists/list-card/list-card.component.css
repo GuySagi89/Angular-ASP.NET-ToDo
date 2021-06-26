@@ -1,0 +1,20 @@
+:host{
+  margin: 30px;
+}
+
+button{
+
+  width: 200px;
+  height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+align-items: center;
+padding: 70px;
+}
+
+mat-icon{
+  transform:scale(2);
+  margin-bottom: 20px;
+}

@@ -1,0 +1,15 @@
+<div class="container">
+
+  <p>{{currentList.caption}}</p>
+  <p>{{currentList.icon}}</p>
+  <p>{{currentList.description}}</p>
+
+  <div class="button-container">
+
+    <button mat-raised-button color="primary" (click)="goToEditList(-1)">New List...</button>
+    <button mat-raised-button color="primary" (click)="goToEditList(currentList.id)">Edit...</button>
+    <button mat-raised-button color="primary" (click)="deleteList(currentList.id)">Delete</button>
+
+  </div>
+
+</div>

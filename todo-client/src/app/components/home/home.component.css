@@ -48,26 +48,10 @@ padding-top: 30px;
 
 }
 button{
-  cursor: pointer;
-  box-shadow: 1px 1px 5px rgb(44, 12, 40);
-  background: linear-gradient(138deg, rgba(90,83,136,1) 0%, rgb(72, 63, 133) 100%);
-  font-weight: 400;
-  color: white;
-  font-size: 22px;
+  font-size: 20px;
   margin: 20px;
   padding: 15px;
-  border: solid 1px black;
   border-radius: 4px;
-}
-
-button:active {
-  box-shadow: 5px 5px 0 rgba(102, 102, 102, 0.568);
-  transform: translate(4px,4px);
-
-}
-
-button:hover{
-  background: rgb(59, 52, 102);
 }
 
 .mat-icon{
@@ -75,10 +59,9 @@ button:hover{
 }
 
 .detail-blocks-container{
-  margin-top: 15px;
-display: flex;
-flex-direction: row;
-
-align-items:center;
-justify-content:space-evenly;
+  box-shadow: inset 0px 3px 3px 0px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: row;
+  align-items:center;
+  justify-content:space-evenly;
 }
