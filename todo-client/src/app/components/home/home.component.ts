@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { NEW_LIST_PAGE } from 'src/app/core/constants/general-constants';
 import { ListsService } from 'src/app/core/services/lists.service';
 
 @Component({
@@ -9,24 +11,23 @@ import { ListsService } from 'src/app/core/services/lists.service';
 })
 export class HomeComponent implements OnInit {
   todaysDate!: number;
-  listsAmount!: number;
+  listsAmount!: Observable<number>;
 
   constructor(private router: Router, private listsService: ListsService) {}
 
   ngOnInit(): void {
     this.todaysDate = Date.now();
-
-    this.listsAmount = this.listsService.getAllLists().length;
+    this.listsAmount = this.listsService.getListSize();
   }
 
   goToNewList() {
-    this.router.navigate(['lists', '-1', 'edit']);
+    this.router.navigate([NEW_LIST_PAGE]);
   }
-  goToAllLists(){
+  goToAllLists() {
     this.router.navigate(['lists']);
   }
 
-  goToAllItems(){
+  goToAllItems() {
     this.router.navigate(['items']);
   }
 }

@@ -33,14 +33,13 @@
       <mat-form-field appearance="fill">
         <mat-label>Color</mat-label>
         <mat-select formControlName="color">
-          <mat-option *ngFor="let color of colors" [value]="color.value" [style.color]="color.viewValue|lowercase">
+          <mat-option *ngFor="let color of colors" [value]="color.value" [style.color]="color.value">
             {{color.viewValue}}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <button  [disabled]="todoForm.invalid"
-    mat-raised-button color="primary">Save</button>
+    <button [disabled]="todoForm.invalid" mat-raised-button color="primary">Save</button>
   </form>
 </mat-card>

@@ -1,22 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import {
+  COLORS,
+  ICONS,
+  NEW_LIST_ID,
+  VALIDATOR_CHARACTER_MAX,
+  VALIDATOR_CHARACTER_MIN,
+  VALIDATOR_WORDS_MIN,
+} from 'src/app/core/constants/general-constants';
+
 import { TodoList } from 'src/app/core/models/todo-list.model';
 import { ListsService } from 'src/app/core/services/lists.service';
 import {
-  charactersValidator,
-  wordsValidator,
+  minCharactersValidator,
+  minWordsValidator,
+  maxCharactersValidator,
 } from 'src/app/core/validations/general-validators';
-
-interface Icon {
-  value: string;
-  viewValue: string;
-}
-
-interface Color {
-  value: string;
-  viewValue: string;
-}
 
 @Component({
   selector: 'app-edit-list',
@@ -24,24 +24,11 @@ interface Color {
   styleUrls: ['./edit-list.component.css'],
 })
 export class EditListComponent implements OnInit {
-  icons: Icon[] = [
-    { value: 'list', viewValue: 'list' },
-    { value: 'home', viewValue: 'home' },
-    { value: 'star', viewValue: 'star' },
-  ];
-
-  colors: Color[] = [
-    { value: 'black', viewValue: 'Black' },
-    { value: 'red', viewValue: 'Red' },
-    { value: 'green', viewValue: 'Green' },
-    { value: 'blue', viewValue: 'Blue' },
-    { value: 'orange', viewValue: 'Orange' },
-  ];
-
   todoForm!: FormGroup;
   currentList!: TodoList;
   id!: number;
-  isNewList!: boolean;
+  icons = ICONS;
+  colors = COLORS;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,19 +38,18 @@ export class EditListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentList = this.listService.getEmptyList();
+    this.currentList = this.listService.getTemplateList();
 
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       this.loadDetails();
-      this.isNewList = this.id === -1;
     });
 
     this.handleForm();
   }
 
   loadDetails() {
-    if (this.id !== -1) {
+    if (this.id !== NEW_LIST_ID) {
       let todoList = this.listService.getListByID(this.id);
       if (typeof todoList != 'undefined') {
         this.currentList = todoList;
@@ -75,10 +61,10 @@ export class EditListComponent implements OnInit {
 
   handleForm() {
     this.todoForm = this.formService.group({
-      caption: [this.currentList.caption, [Validators.required]],
+      caption: [this.currentList.caption, [Validators.required,maxCharactersValidator(VALIDATOR_CHARACTER_MAX)]],
       description: [
         this.currentList.description,
-        [Validators.required, wordsValidator(10), charactersValidator(30)],
+        [Validators.required, minWordsValidator(VALIDATOR_WORDS_MIN), minCharactersValidator(VALIDATOR_CHARACTER_MIN)],
       ],
       icon: [this.currentList.icon, [Validators.required]],
       color: [this.currentList.color, [Validators.required]],
@@ -88,7 +74,7 @@ export class EditListComponent implements OnInit {
   saveForm() {
     this.currentList = { ...this.currentList, ...this.todoForm.value };
 
-    if (this.isNewList) {
+    if (this.id === NEW_LIST_ID) {
       this.listService.addList(this.currentList);
     } else {
       this.listService.updateList(this.currentList);

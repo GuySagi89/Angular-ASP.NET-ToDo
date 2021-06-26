@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import {
+  NEW_LIST_ID,
+  NEW_LIST_PAGE,
+} from 'src/app/core/constants/general-constants';
 import { TodoList } from 'src/app/core/models/todo-list.model';
 import { ListsService } from 'src/app/core/services/lists.service';
 
@@ -17,10 +21,11 @@ export class ListsComponent implements OnInit {
     this.todoLists = this.listsService.getAllLists();
   }
 
-  goToNewList(){
-    this.router.navigate(['lists','-1','edit']);
-  }
-  goToViewList(id: number) {
-    this.router.navigate(['lists', id]);
+  onListClick(id: number) {
+    if (id === NEW_LIST_ID) {
+      this.router.navigate([NEW_LIST_PAGE]);
+    } else {
+      this.router.navigate(['lists', id]);
+    }
   }
 }

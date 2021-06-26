@@ -6,14 +6,13 @@ import { EditListComponent } from './components/lists/edit-list/edit-list.compon
 import { ListsComponent } from './components/lists/lists.component';
 import { ViewListComponent } from './components/lists/view-list/view-list.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { ListsGuard } from './core/guards/lists.guard';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
-  { path: 'lists/:id/edit', component: EditListComponent },
+  { path: 'lists', component: ListsComponent, canActivate: [ListsGuard] },
   { path: 'lists/:id', component: ViewListComponent },
-  {
-    path: 'lists', component: ListsComponent,
-  },
+  { path: 'lists/:id/edit', component: EditListComponent },
   { path: 'items', component: ItemsComponent },
   { path: '**', component: PageNotFoundComponent },
 ];

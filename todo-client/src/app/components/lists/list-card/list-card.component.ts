@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TodoList } from 'src/app/core/models/todo-list.model';
 
 @Component({
   selector: 'app-list-card',
@@ -7,8 +8,12 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ListCardComponent implements OnInit {
   constructor() {}
-  @Input() icon = '';
-  @Input() title = '';
-  @Input() color = '';
+  @Input() list!: TodoList;
+  @Output() listSelected = new EventEmitter<number>();
+
   ngOnInit(): void {}
+
+  onClick(id: number) {
+    this.listSelected.emit(id);
+  }
 }

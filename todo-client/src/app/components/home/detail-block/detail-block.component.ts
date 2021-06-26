@@ -9,8 +9,8 @@ export class DetailBlockComponent implements OnInit {
   constructor() {}
 
   @Input() icon!: string;
-  @Input() amount!: number;
-  @Input() title!:string;
+  @Input() amount!: number | null;
+  @Input() title!: string;
 
   ngOnInit(): void {}
 }

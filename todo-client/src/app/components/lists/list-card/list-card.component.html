@@ -1,6 +1,10 @@
-<button mat-raised-button>
-  <mat-icon [style.color]="color">
+<button *ngIf="list" (click)="onClick(list.id)" mat-raised-button>
+  <mat-icon [style.color]="list.color">
+    {{list.icon}}</mat-icon>
+  <h1>{{list.caption}}</h1>
+</button>
 
-    {{icon}}</mat-icon>
-  <h1>{{title}}</h1>
+<button *ngIf="!list" (click)="onClick(-1)" mat-raised-button>
+  <mat-icon> add </mat-icon>
+  <h1>...New</h1>
 </button>

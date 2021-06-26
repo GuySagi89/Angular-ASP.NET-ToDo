@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { TodoList } from '../models/todo-list.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ListsService {
-  constructor() {}
+  private listsAmount = new BehaviorSubject<number>(0);
+
+  constructor() {
+    this.listsAmount.next(this.todoLists.length);
+  }
 
   private todoLists: TodoList[] = [
     {
@@ -33,6 +38,10 @@ export class ListsService {
     },
   ];
 
+  getListSize() {
+    return this.listsAmount.asObservable();
+  }
+
   getAllLists() {
     return [...this.todoLists];
   }
@@ -42,9 +51,10 @@ export class ListsService {
 
   deleteListByID(id: number) {
     this.todoLists = this.todoLists.filter((l) => l.id !== id);
+    this.listsAmount.next(this.todoLists.length);
   }
 
-  getEmptyList() {
+  getTemplateList() {
     return {
       id: 0,
       caption: '',
@@ -61,6 +71,7 @@ export class ListsService {
     listToAdd.id = maxID + 1;
 
     this.todoLists.push(listToAdd);
+    this.listsAmount.next(this.todoLists.length);
   }
 
   updateList(list: TodoList) {
