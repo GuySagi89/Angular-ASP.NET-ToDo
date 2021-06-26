@@ -54,7 +54,7 @@ export class ListsService {
     } as TodoList;
   }
 
-  addNewList(list: TodoList) {
+  addList(list: TodoList) {
     const maxID = Math.max(...this.todoLists.map((o) => o.id), 0);
 
     let listToAdd = list;
@@ -63,7 +63,7 @@ export class ListsService {
     this.todoLists.push(listToAdd);
   }
 
-  editList(list: TodoList) {
+  updateList(list: TodoList) {
     let indexToReplace = this.todoLists.findIndex((l) => l.id === list.id);
     this.todoLists[indexToReplace] = list;
   }
