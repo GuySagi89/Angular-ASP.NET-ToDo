@@ -1,3 +1,9 @@
 <div class="container">
-  <h1>Welcome to items</h1>
+  <div class="todo-items-container">
+    <app-todo-item-presenter *ngFor="let item of allTodoItems" [caption]="item.caption"
+      [isCompleted]="item.isCompleted">
+    </app-todo-item-presenter>
+  </div>
+
+  <h1 *ngIf="!allTodoItems || allTodoItems.length===0"> You do not have any uncompleted todo items! </h1>
 </div>

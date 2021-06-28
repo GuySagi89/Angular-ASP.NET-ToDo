@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 import {
   COLORS,
   ICONS,
   NEW_LIST_ID,
-  VALIDATOR_CHARACTER_MAX,
-  VALIDATOR_CHARACTER_MIN,
-  VALIDATOR_WORDS_MIN,
 } from 'src/app/core/constants/general-constants';
 
 import { TodoList } from 'src/app/core/models/todo-list.model';
@@ -29,6 +27,7 @@ export class EditListComponent implements OnInit {
   id!: number;
   icons = ICONS;
   colors = COLORS;
+  currentId$: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +38,7 @@ export class EditListComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentList = this.listService.getTemplateList();
+    this.currentId$=this.route.params.pipe(map(params=>+params['id']));
 
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
@@ -61,10 +61,17 @@ export class EditListComponent implements OnInit {
 
   handleForm() {
     this.todoForm = this.formService.group({
-      caption: [this.currentList.caption, [Validators.required,maxCharactersValidator(VALIDATOR_CHARACTER_MAX)]],
+      caption: [
+        this.currentList.caption,
+        [Validators.required, maxCharactersValidator(12)],
+      ],
       description: [
         this.currentList.description,
-        [Validators.required, minWordsValidator(VALIDATOR_WORDS_MIN), minCharactersValidator(VALIDATOR_CHARACTER_MIN)],
+        [
+          Validators.required,
+          minWordsValidator(10),
+          minCharactersValidator(30),
+        ],
       ],
       icon: [this.currentList.icon, [Validators.required]],
       color: [this.currentList.color, [Validators.required]],

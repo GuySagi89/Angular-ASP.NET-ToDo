@@ -1,3 +1,5 @@
+import { TodoItem } from '../models/todo-item.model';
+import { TodoList } from '../models/todo-list.model';
 import { DropdownOptions } from '../tpyes/dropdown-options';
 
 export const COLORS: DropdownOptions[] = [
@@ -21,6 +23,4 @@ export const ICONS: DropdownOptions[] = [
 
 export const NEW_LIST_PAGE = '/lists/-1/edit';
 export const NEW_LIST_ID = -1;
-export const VALIDATOR_CHARACTER_MIN = 30;
-export const VALIDATOR_WORDS_MIN = 10;
-export const VALIDATOR_CHARACTER_MAX = 12;
+

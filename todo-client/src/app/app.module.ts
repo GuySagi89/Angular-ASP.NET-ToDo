@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatMenuModule } from '@angular/material/menu';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
@@ -15,14 +15,16 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { DetailBlockComponent } from './components/home/detail-block/detail-block.component';
 import { EditListComponent } from './components/lists/edit-list/edit-list.component';
 import { ViewListComponent } from './components/lists/view-list/view-list.component';
+import { TodoItemPresenterComponent } from './components/items/todo-item-presenter/todo-item-presenter.component';
 
+import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ListCardComponent } from './components/lists/list-card/list-card.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     EditListComponent,
     ViewListComponent,
     ListCardComponent,
+    TodoItemPresenterComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,

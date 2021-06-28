@@ -1,15 +1,47 @@
 <div class="container">
 
-  <p>{{currentList.caption}}</p>
-  <p>{{currentList.icon}}</p>
-  <p>{{currentList.description}}</p>
-
-  <div class="button-container">
-
-    <button mat-raised-button color="primary" (click)="goToEditList(-1)">New List...</button>
-    <button mat-raised-button color="primary" (click)="goToEditList(currentList.id)">Edit...</button>
-    <button mat-raised-button color="primary" (click)="deleteList(currentList.id)">Delete</button>
-
+  <div class="caption">
+    <h1 [style.color]="currentList.color">{{currentList.caption}}</h1>
   </div>
 
+  <div class="details-actions-container">
+
+    <div class="icon">
+      <mat-icon [style.color]="currentList.color">{{currentList.icon}}</mat-icon>
+    </div>
+
+    <div class="description-actions" *ngIf="!(deletePrompt$|async)">
+      <div class="description">{{currentList.description}}</div>
+      <div class="button-container">
+        <button mat-raised-button color="primary" (click)="goToEditList(-1)">New List...</button>
+        <button mat-raised-button color="primary" (click)="goToEditList(currentList.id)">Edit...</button>
+        <button class='delete-button' mat-raised-button color="primary" (click)="toggleDelete()">Delete</button>
+      </div>
+    </div>
+
+    <div class="description-actions" *ngIf="(deletePrompt$|async)">
+      <div [style.color]="'red'" class="description">Are you sure you want to delete this entire list?</div>
+      <div class="button-container">
+        <button class='cancel-button' mat-raised-button color="primary" (click)="toggleDelete()">Cancel</button>
+        <button class='delete-button' mat-raised-button color="primary"
+          (click)="deleteList(currentList.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="todo-items-container">
+    <app-todo-item-presenter *ngFor="let item of currentTodoItems|async" [caption]="item.caption"
+      [isCompleted]="item.isCompleted">
+    </app-todo-item-presenter>
+  </div>
+
+  <form [formGroup]="toDoForm" (ngSubmit)="addItem()">
+    <div class='new-todo-item'>
+      <button [disabled]="!toDoForm.valid" class='todo-button' mat-raised-button color="primary">+</button>
+
+      <mat-form-field>
+        <input formControlName='item' matInput placeholder="New Item">
+      </mat-form-field>
+    </div>
+  </form>
 </div>

@@ -1,0 +1,25 @@
+.container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 5px 0 0 5px;
+}
+
+mat-checkbox{
+  transform: scale(1.5);
+  margin-bottom: 5px;
+}
+
+.details-container{
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.caption,.strike-through{
+  font-size: 25px;
+  margin-left: 15px;
+}
+.strike-through{
+  text-decoration: line-through;
+  color: rgba(209, 54, 54, 0.6);
+}

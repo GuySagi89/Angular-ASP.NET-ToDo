@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { TO_DO_LISTS } from '../constants/general-constants';
 import { TodoList } from '../models/todo-list.model';
 
 @Injectable({
@@ -7,36 +8,12 @@ import { TodoList } from '../models/todo-list.model';
 })
 export class ListsService {
   private listsAmount = new BehaviorSubject<number>(0);
+  private listObs$ = new Subject<TodoList>();
+  todoLists = TO_DO_LISTS;
 
   constructor() {
     this.listsAmount.next(this.todoLists.length);
   }
-
-  private todoLists: TodoList[] = [
-    {
-      id: 1,
-      caption: 'work',
-      description: 'Buy a new plant for office ha ha ha me is smart',
-      icon: 'home',
-      color: 'red',
-    },
-
-    {
-      id: 2,
-      caption: 'home',
-      description: 'Tidy the thingy thing',
-      icon: 'star',
-      color: 'green',
-    },
-
-    {
-      id: 5,
-      caption: 'revenge',
-      description: 'Hello there! my name is Inigo.',
-      icon: 'list',
-      color: 'blue',
-    },
-  ];
 
   getListSize() {
     return this.listsAmount.asObservable();
@@ -46,9 +23,13 @@ export class ListsService {
     return [...this.todoLists];
   }
   getListByID(id: number) {
-    return this.todoLists.find((l) => l.id === id);
-  }
 
+    this.listObs$.next(this.todoLists.find((l) => l.id === id));
+ }
+
+ getListObs(){
+   return this.listObs$.asObservable();
+ }
   deleteListByID(id: number) {
     this.todoLists = this.todoLists.filter((l) => l.id !== id);
     this.listsAmount.next(this.todoLists.length);
@@ -65,7 +46,7 @@ export class ListsService {
   }
 
   addList(list: TodoList) {
-    const maxID = Math.max(...this.todoLists.map((o) => o.id), 0);
+    const maxID = Math.max(...this.todoLists.map((l) => l.id), 0);
 
     let listToAdd = list;
     listToAdd.id = maxID + 1;
