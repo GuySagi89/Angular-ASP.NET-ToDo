@@ -15,29 +15,19 @@ import { ListsService } from '../services/lists.service';
   providedIn: 'root',
 })
 export class ListsGuard implements CanActivate {
-  listsSize$!: Observable<number>;
+
 
   constructor(private router: Router, private listsService: ListsService) {
-    // this.listsSize$ = this.listsService.getListSize();
   }
 
-  canActivate() //   route: ActivatedRouteSnapshot,
-  //   state: RouterStateSnapshot
-  // ):
-  //   | Observable<boolean | UrlTree>
-  //   | Promise<boolean | UrlTree>
-  //   | boolean
-  //   | UrlTree {
-  //   return this.listsService.getListSize().pipe(
-  //     map((s) => {
-  //       if (s === 0) {
-  //         return this.router.parseUrl(NEW_LIST_PAGE);
-  //       }
-  //       return true;
-  //     })
-  //   );
-  // }
-  {
-    return true;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return this.listsService.getListscount().pipe(
+      map((s) => {
+        if (s === 0) {
+          return this.router.parseUrl(NEW_LIST_PAGE);
+        }
+        return true;
+      })
+    );
   }
 }

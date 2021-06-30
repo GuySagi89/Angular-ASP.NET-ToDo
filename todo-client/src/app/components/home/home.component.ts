@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     this.todaysDate = Date.now();
-    this.listsAmount= await this.listsService.getListscount();
+    this.listsAmount= await this.listsService.getListscount().toPromise();
     this.itemsAmount =await  this.itemsService.getItemscount(false);
     this.activeItemsAmount = await this.itemsService.getItemscount(true);
   }

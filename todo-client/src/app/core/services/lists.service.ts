@@ -66,7 +66,7 @@ export class ListsService {
   getListscount() {
     return this.httpClient
       .get<TodoList[]>(this.serverURL)
-      .pipe(map((l) => l.length))
-      .toPromise();
+      .pipe(map((l) => l.length));
+
   }
 }
