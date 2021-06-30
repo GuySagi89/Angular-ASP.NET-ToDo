@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "Id": 1,
+    "Caption": "Buy a new houseplant",
+    "ListId": 2,
+    "IsCompleted": true
+  },
+  {
+    "Id": 2,
+    "Caption": "Buy a new desk",
+    "ListId": 2,
+    "IsCompleted": true
+  }
+]

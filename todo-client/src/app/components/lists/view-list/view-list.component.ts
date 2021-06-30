@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs';
 
 import { first, map, switchMap } from 'rxjs/operators';
@@ -29,11 +29,14 @@ export class ViewListComponent implements OnInit, OnDestroy {
   currentList!: TodoList;
   currentList$!: Observable<TodoList>;
   currentTodoItems$!: Observable<TodoItem[]>;
+  currentTodoItemsUpdate$ = new Subject<TodoItem[]>();
   deleteConfirmPrompt$ = new BehaviorSubject<boolean>(false);
   toDoForm!: FormGroup;
   validList$!: Observable<boolean>;
   listUpdate!: Subscription;
   currentTodoItems!: TodoItem[];
+  currentListSubscriber!: Subscription;
+  currentItemsSubscriber!: Subscription;
 
   constructor(
     private listsService: ListsService,
@@ -42,11 +45,11 @@ export class ViewListComponent implements OnInit, OnDestroy {
     private router: Router,
     private formService: FormBuilder
   ) {}
-  ngOnDestroy(): void {}
+
   async ngOnInit() {
     this.id = +this.route.snapshot.params['id'];
 
-    if (isNaN(this.id) || (this.id <= 0 && this.id !== -1)) {
+    if (isNaN(this.id) || (this.id <= 0 && this.id !== NEW_LIST_ID)) {
       this.router.navigate(['404']);
     }
 
@@ -56,11 +59,19 @@ export class ViewListComponent implements OnInit, OnDestroy {
       switchMap((id) => this.listsService.getListByID(id))
     );
 
+    this.currentListSubscriber = this.currentList$.subscribe(
+      (l) => (this.currentList = l)
+    );
+
+    this.currentTodoItems$ = this.id$.pipe(
+      switchMap((id) => this.listsService.getAllListsItems(id))
+    );
+
     this.buildForm();
-    this.currentList = await this.currentList$.pipe(first()).toPromise();
-    this.currentTodoItems = await this.listsService
-      .getAllListsItems(this.id)
-      .toPromise();
+  }
+
+  ngOnDestroy(): void {
+    this.currentListSubscriber.unsubscribe();
   }
 
   goToEditList() {
@@ -99,8 +110,9 @@ export class ViewListComponent implements OnInit, OnDestroy {
       isCompleted: false,
     };
 
-    this.itemsService.addItem(newItem);
+    await this.itemsService.addItem(newItem);
     this.toDoForm.reset();
+
   }
 
   async onCheck(itemId: number) {

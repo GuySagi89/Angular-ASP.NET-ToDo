@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "Id": 2,
+    "Caption": "Homey",
+    "Description": "This is a list meant for home shopping and other home tasks.",
+    "Icon": "home",
+    "Color": "blue"
+  }
+]

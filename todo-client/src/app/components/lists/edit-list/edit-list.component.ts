@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable, Observer } from 'rxjs';
+import { Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import {
   COLORS,
@@ -32,6 +32,8 @@ export class EditListComponent implements OnInit {
   icons = ICONS;
   colors = COLORS;
   id$!: Observable<number>;
+selectedIcon!:string;
+selectedColor!:string;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +43,6 @@ export class EditListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    try{
     this.currentList = EMPTY_LIST;
 
     this.id = +this.route.snapshot.params['id'];
@@ -58,10 +59,11 @@ export class EditListComponent implements OnInit {
       );
 
       this.currentList = await this.currentList$.pipe(first()).toPromise();
+      this.selectedIcon=this.currentList.icon;
+      this.selectedColor=this.currentList.color;
     }
 
     this.handleForm();
-  }catch{alert('failed')}
   }
 
   handleForm() {

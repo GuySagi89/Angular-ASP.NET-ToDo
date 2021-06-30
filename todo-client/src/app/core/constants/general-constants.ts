@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { TodoItem } from '../models/todo-item.model';
 import { TodoList } from '../models/todo-list.model';
-import { DropdownOptions } from '../tpyes/dropdown-options';
+import { DropdownOptions } from '../types/dropdown-options';
 
 export const COLORS: DropdownOptions[] = [
   { value: 'black', viewValue: 'Black' },
