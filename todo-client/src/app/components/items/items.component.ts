@@ -16,11 +16,10 @@ export class ItemsComponent implements OnInit {
     this.allAciveTodoItems$ = this.itemsService.getAllItems(true);
   }
 
-  async onCheck(itemId:number){
-    try{
-    await this.itemsService.toggleItemStatus(itemId);
-    }catch(error){
-      console.log(error);
+   onCheck(item:TodoItem){
+     let newItem=item;
+     newItem.isCompleted=!item.isCompleted;
+     this.itemsService.editItem(newItem);
     }
   }
-}
+

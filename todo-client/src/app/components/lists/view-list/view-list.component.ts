@@ -122,7 +122,9 @@ export class ViewListComponent implements OnInit {
     }
   }
 
-  onCheck(itemId: number) {
-    this.itemsService.toggleItemStatus(itemId);
+   onCheck(item: TodoItem) {
+    let newItem=item;
+    newItem.isCompleted=!item.isCompleted;
+    this.itemsService.editItem(newItem);
   }
 }

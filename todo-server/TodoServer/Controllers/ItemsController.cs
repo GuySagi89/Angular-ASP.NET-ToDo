@@ -59,12 +59,12 @@ namespace TodoServer.Controllers
             }
         }
 
-        [HttpPut("{id}/toggle")]
-        public async Task<ActionResult> ToggleItemStatus(string id)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditItem([FromBody] TodoItem item)
         {
             try
             {
-                await _repo.ToggleItemStatus(id);
+                await _repo.EditItem(item);
                 return Ok();
             }
             catch

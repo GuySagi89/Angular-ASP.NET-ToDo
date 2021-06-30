@@ -16,6 +16,6 @@ namespace TodoServer.Services
         Task<TodoItem> GetItemById(string id);
         Task<TodoList> GetListById(string id);
         Task<List<TodoItem>> GetListTodoItems(string listId,bool activeItems);
-        Task ToggleItemStatus(string itemId);
+        Task EditItem(TodoItem item);
     }
 }

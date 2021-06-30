@@ -28,10 +28,18 @@ export class ItemsService {
     return this.httpClient.get<TodoItem>(url).toPromise();
   }
 
-  async toggleItemStatus(id: number) {
-    const url = `${this.serverURL}/${id}/toggle`;
+  async editItem(item: TodoItem) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    let jsonItem = JSON.stringify(item);
+    const url = `${this.serverURL}/${item.id}`;
+
     try{
-    await this.httpClient.put<any>(url, '').toPromise();
+    await this.httpClient.put<any>(url, jsonItem,httpOptions).toPromise();
     }catch(error){console.log(error)};
   }
 

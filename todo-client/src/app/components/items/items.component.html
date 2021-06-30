@@ -1,6 +1,6 @@
 <div class="container">
   <div class="todo-items-container">
-    <app-todo-item-presenter *ngFor="let item of allAciveTodoItems$|async" [caption]="item.caption" (checkChanged)="onCheck(item.id)"
+    <app-todo-item-presenter *ngFor="let item of allAciveTodoItems$|async" [caption]="item.caption" (checkChanged)="onCheck(item)"
       [isCompleted]="item.isCompleted">
     </app-todo-item-presenter>
   </div>

@@ -108,23 +108,7 @@ namespace TodoServer.Services
 
         }
 
-        public async Task ToggleItemStatus(string itemId)
-        {
-            var itemsList = await _data.GetAllItems();
-            var updatedItems = itemsList.
-                Select(i =>
-                {
-                    if (i.Id == int.Parse(itemId))
-                    {
-                        var changedItem = i with { IsCompleted = !i.IsCompleted };
-                        return changedItem;
-                    }
-                    else return i;
-                }
-                )
-                ;
-            await _data.UpdateItemsDB(updatedItems.ToList());
-        }
+
 
         public async Task EditList(TodoList list)
         {
@@ -153,6 +137,24 @@ namespace TodoServer.Services
                     .ToList();
             }
             return list.Where(l => l.ListId == int.Parse(listId)).ToList();
+        }
+
+        public async Task EditItem(TodoItem item)
+        {
+            var todoItems = await _data.GetAllItems();
+            var updatedTodoItems = todoItems.
+             Select(i =>
+             {
+                 if (i.Id == item.Id)
+                 {
+                     return item;
+                 }
+                 else return i;
+             }
+             )
+             ;
+            await _data.UpdateItemsDB(updatedTodoItems.ToList());
+
         }
     }
 }
