@@ -1,9 +1,9 @@
 <div class="container">
   <div class="todo-items-container">
-    <app-todo-item-presenter *ngFor="let item of allTodoItems" [caption]="item.caption"
+    <app-todo-item-presenter *ngFor="let item of allAciveTodoItems|async" [caption]="item.caption" (checkChanged)="onCheck(item.id)"
       [isCompleted]="item.isCompleted">
     </app-todo-item-presenter>
   </div>
 
-  <h1 *ngIf="!allTodoItems || allTodoItems.length===0"> You do not have any uncompleted todo items! </h1>
+  <h1 *ngIf="((allAciveTodoItems |async)?.length==0)"> You do not have any uncompleted todo items! </h1>
 </div>

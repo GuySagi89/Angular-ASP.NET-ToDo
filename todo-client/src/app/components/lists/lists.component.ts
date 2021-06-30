@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import {
   NEW_LIST_ID,
   NEW_LIST_PAGE,
@@ -13,12 +14,12 @@ import { ListsService } from 'src/app/core/services/lists.service';
   styleUrls: ['./lists.component.css'],
 })
 export class ListsComponent implements OnInit {
-  todoLists!: TodoList[];
+  todoLists$!: Observable<TodoList[]>;
 
   constructor(private router: Router, private listsService: ListsService) {}
 
-  ngOnInit(): void {
-    this.todoLists = this.listsService.getAllLists();
+   ngOnInit() {
+    this.todoLists$=  this.listsService.getAllLists();
   }
 
   onListClick(id: number) {

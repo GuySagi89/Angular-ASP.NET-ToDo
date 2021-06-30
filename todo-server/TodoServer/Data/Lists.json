@@ -1,23 +1,9 @@
 [
   {
-    "Id": 4,
-    "Caption": "ewrewrewrewr",
-    "Description": "ewrewr",
-    "Icon": "star",
-    "Color": "red"
-  },
-  {
-    "Id": 5,
-    "Caption": "hahfdfahdfah",
-    "Description": "ewrewr",
-    "Icon": "star",
-    "Color": "blue"
-  },
-  {
-    "Id": 6,
-    "Caption": "hahfdfahdfah",
-    "Description": "ewrewr",
-    "Icon": "star",
+    "Id": 2,
+    "Caption": "Homey",
+    "Description": "This is a list meant for home shopping and other home tasks.",
+    "Icon": "home",
     "Color": "blue"
   }
 ]

@@ -9,6 +9,7 @@ namespace TodoServer
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,7 +20,16 @@ namespace TodoServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                });
+
+            });
+
             services.AddControllers();
             services.AddTransient<IDataService, DataService>();
             services.AddSingleton<IRepositoryService, RepositoryService>();
@@ -33,7 +43,7 @@ namespace TodoServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseRouting();
 

@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+
+import { first, map, switchMap } from 'rxjs/operators';
+import {
+  NEW_LIST_ID,
+  NEW_LIST_PAGE,
+} from 'src/app/core/constants/general-constants';
 import { TodoItem } from 'src/app/core/models/todo-item.model';
 import { TodoList } from 'src/app/core/models/todo-list.model';
 import { ItemsService } from 'src/app/core/services/items.service';
@@ -17,14 +23,17 @@ import {
   templateUrl: './view-list.component.html',
   styleUrls: ['./view-list.component.css'],
 })
-export class ViewListComponent implements OnInit {
+export class ViewListComponent implements OnInit, OnDestroy {
   id!: number;
+  id$!: Observable<number>;
   currentList!: TodoList;
-  currentTodoItemsList!: TodoItem[];
-  currentTodoItems!: Observable<TodoItem[]>;
-  deletePrompt$ = new BehaviorSubject<boolean>(false);
-  currentId$=new Observable<number>();
+  currentList$!: Observable<TodoList>;
+  currentTodoItems$!: Observable<TodoItem[]>;
+  deleteConfirmPrompt$ = new BehaviorSubject<boolean>(false);
   toDoForm!: FormGroup;
+  validList$!: Observable<boolean>;
+  listUpdate!: Subscription;
+  currentTodoItems!: TodoItem[];
 
   constructor(
     private listsService: ListsService,
@@ -33,41 +42,41 @@ export class ViewListComponent implements OnInit {
     private router: Router,
     private formService: FormBuilder
   ) {}
+  ngOnDestroy(): void {}
+  async ngOnInit() {
+    this.id = +this.route.snapshot.params['id'];
 
-  ngOnInit(): void {
-    this.buildForm();
-    this.currentTodoItems=this.itemsService.getItemsObs().pipe(map(v=>v));
-    this.itemsService.getAllItemsByListID(this.currentList.id);
-
-    this.id=+this.route.snapshot.params['id'];
-    this.currentId$=this.route.params.pipe(map(params=>+params['id']));
-
-    this.route.params.subscribe((params: Params) => {
-      this.id = +params['id'];
-      this.loadDetails();
-    });
-  }
-
-  loadDetails() {
-    let todoList = this.listsService.getListByID(this.id);
-    if (typeof todoList != 'undefined') {
-      this.currentList = todoList;
-
-    } else {
+    if (isNaN(this.id) || (this.id <= 0 && this.id !== -1)) {
       this.router.navigate(['404']);
     }
+
+    this.id$ = this.route.params.pipe(map((params) => +params.id));
+
+    this.currentList$ = this.id$.pipe(
+      switchMap((id) => this.listsService.getListByID(id))
+    );
+
+    this.buildForm();
+    this.currentList = await this.currentList$.pipe(first()).toPromise();
+    this.currentTodoItems = await this.listsService
+      .getAllListsItems(this.id)
+      .toPromise();
   }
 
-  goToEditList(id: number) {
-    this.router.navigate(['lists', id, 'edit']);
+  goToEditList() {
+    this.router.navigate(['lists', this.id, 'edit']);
+  }
+
+  goToNewList() {
+    this.router.navigate([NEW_LIST_PAGE]);
   }
 
   toggleDelete() {
-    this.deletePrompt$.next(!this.deletePrompt$.value);
+    this.deleteConfirmPrompt$.next(!this.deleteConfirmPrompt$.value);
   }
 
-  deleteList(id: number) {
-    this.listsService.deleteListByID(id);
+  deleteList() {
+    this.listsService.deleteListByID(this.id);
     this.router.navigate(['']);
   }
 
@@ -80,9 +89,21 @@ export class ViewListComponent implements OnInit {
     });
   }
 
-  addItem() {
-    let formResult: { item: '' } = this.toDoForm.value;
-    this.itemsService.addItem(formResult.item, this.id);
+  async addItem() {
+    let itemCaption: { item: '' } = this.toDoForm.value;
+
+    let newItem: TodoItem = {
+      id: 0,
+      caption: itemCaption.item,
+      listId: this.currentList.id,
+      isCompleted: false,
+    };
+
+    this.itemsService.addItem(newItem);
     this.toDoForm.reset();
+  }
+
+  async onCheck(itemId: number) {
+    await this.itemsService.toggleItemStatus(itemId);
   }
 }

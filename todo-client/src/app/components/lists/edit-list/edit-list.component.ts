@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { Observable, Observer } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
 import {
   COLORS,
+  EMPTY_LIST,
   ICONS,
   NEW_LIST_ID,
 } from 'src/app/core/constants/general-constants';
@@ -23,40 +25,43 @@ import {
 })
 export class EditListComponent implements OnInit {
   todoForm!: FormGroup;
+  currentList$!: Observable<TodoList>;
   currentList!: TodoList;
+
   id!: number;
   icons = ICONS;
   colors = COLORS;
-  currentId$: any;
+  id$!: Observable<number>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private listService: ListsService,
+    private listsService: ListsService,
     private formService: FormBuilder
   ) {}
 
-  ngOnInit(): void {
-    this.currentList = this.listService.getTemplateList();
-    this.currentId$=this.route.params.pipe(map(params=>+params['id']));
+  async ngOnInit() {
+    try{
+    this.currentList = EMPTY_LIST;
 
-    this.route.params.subscribe((params: Params) => {
-      this.id = +params['id'];
-      this.loadDetails();
-    });
+    this.id = +this.route.snapshot.params['id'];
+
+    if (isNaN(this.id) || (this.id <= 0 && this.id !== -1)) {
+      this.router.navigate(['404']);
+    }
+
+    if (this.id !== -1) {
+      this.id$ = this.route.params.pipe(map((params) => +params.id));
+
+      this.currentList$ = this.id$.pipe(
+        switchMap((id) => this.listsService.getListByID(id))
+      );
+
+      this.currentList = await this.currentList$.pipe(first()).toPromise();
+    }
 
     this.handleForm();
-  }
-
-  loadDetails() {
-    if (this.id !== NEW_LIST_ID) {
-      let todoList = this.listService.getListByID(this.id);
-      if (typeof todoList != 'undefined') {
-        this.currentList = todoList;
-      } else {
-        this.router.navigate(['404']);
-      }
-    }
+  }catch{alert('failed')}
   }
 
   handleForm() {
@@ -78,13 +83,14 @@ export class EditListComponent implements OnInit {
     });
   }
 
-  saveForm() {
-    this.currentList = { ...this.currentList, ...this.todoForm.value };
+  async saveForm() {
+    if (this.todoForm.invalid) return;
 
+    this.currentList = { ...this.currentList, ...this.todoForm.value };
     if (this.id === NEW_LIST_ID) {
-      this.listService.addList(this.currentList);
+      await this.listsService.addList(this.currentList);
     } else {
-      this.listService.updateList(this.currentList);
+      await this.listsService.editList(this.currentList);
     }
 
     this.router.navigate(['lists']);

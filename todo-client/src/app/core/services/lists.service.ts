@@ -1,62 +1,68 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { TO_DO_LISTS } from '../constants/general-constants';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { TodoItem } from '../models/todo-item.model';
 import { TodoList } from '../models/todo-list.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ListsService {
-  private listsAmount = new BehaviorSubject<number>(0);
-  private listObs$ = new Subject<TodoList>();
-  todoLists = TO_DO_LISTS;
+  private serverURL = `${environment.serverURL}/lists`;
 
-  constructor() {
-    this.listsAmount.next(this.todoLists.length);
-  }
-
-  getListSize() {
-    return this.listsAmount.asObservable();
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getAllLists() {
-    return [...this.todoLists];
+    return this.httpClient.get<TodoList[]>(this.serverURL);
   }
+
+  getAllListsItems(id: number) {
+    const url = `${this.serverURL}/${id}/items`;
+    return this.httpClient.get<TodoItem[]>(url);
+  }
+
   getListByID(id: number) {
-
-    this.listObs$.next(this.todoLists.find((l) => l.id === id));
- }
-
- getListObs(){
-   return this.listObs$.asObservable();
- }
-  deleteListByID(id: number) {
-    this.todoLists = this.todoLists.filter((l) => l.id !== id);
-    this.listsAmount.next(this.todoLists.length);
-  }
-
-  getTemplateList() {
-    return {
-      id: 0,
-      caption: '',
-      description: '',
-      icon: '',
-      color: '',
-    } as TodoList;
+    const url = `${this.serverURL}/${id}`;
+    return this.httpClient.get<TodoList>(url);
   }
 
   addList(list: TodoList) {
-    const maxID = Math.max(...this.todoLists.map((l) => l.id), 0);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
 
-    let listToAdd = list;
-    listToAdd.id = maxID + 1;
-
-    this.todoLists.push(listToAdd);
-    this.listsAmount.next(this.todoLists.length);
+    let jsonList = JSON.stringify(list);
+    return this.httpClient
+      .post<TodoList>(this.serverURL, jsonList, httpOptions)
+      .toPromise();
   }
 
-  updateList(list: TodoList) {
-    let indexToReplace = this.todoLists.findIndex((l) => l.id === list.id);
-    this.todoLists[indexToReplace] = list;
+  async deleteListByID(id: number) {
+    const url = `${this.serverURL}/${id}`;
+    await this.httpClient.delete<any>(url).toPromise();
+  }
+
+  async editList(list: TodoList) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    const url = `${this.serverURL}/${list.id}`;
+    let jsonList = JSON.stringify(list);
+    await this.httpClient
+      .put<TodoList>(this.serverURL, jsonList, httpOptions)
+      .toPromise();
+  }
+
+  getListscount() {
+    return this.httpClient
+      .get<TodoList[]>(this.serverURL)
+      .pipe(map((l) => l.length))
+      .toPromise();
   }
 }

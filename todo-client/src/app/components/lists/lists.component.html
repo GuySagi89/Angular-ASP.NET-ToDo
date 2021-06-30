@@ -1,6 +1,6 @@
 <div class="container">
 
-  <app-list-card *ngFor="let list of todoLists" [list]="list" (listSelected)="onListClick($event)"></app-list-card>
+  <app-list-card *ngFor="let list of todoLists$|async" [list]="list" (listSelected)="onListClick($event)"></app-list-card>
 
   <app-list-card (listSelected)="onListClick($event)"></app-list-card>
 

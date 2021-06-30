@@ -1,50 +1,66 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { ITEMS_LIST } from '../constants/general-constants';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { TodoItem } from '../models/todo-item.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ItemsService {
-  itemsList = ITEMS_LIST;
-  itemsListTwo: TodoItem[] = [];
+  private serverURL = `${environment.serverURL}/items`;
 
-  currentEditedItemList$ = new Subject<TodoItem[]>();
+  constructor(private httpClient: HttpClient) {}
 
-  constructor() {}
+  getAllItems(activeItems: boolean): Observable<TodoItem[]> {
+    let url=this.serverURL;
 
-  getItemsObs() {
-    return this.currentEditedItemList$.asObservable();
+    if(activeItems){
+       url = `${this.serverURL}?activeItems=true`;
+    }
+
+    return this.httpClient.get<TodoItem[]>(url);
   }
 
-  getAllItemsByListID(listId: number) {
-    let filteredList = this.itemsList.filter((p) => p.listId === listId);
-    this.currentEditedItemList$.next(filteredList);
+  getItemById(id: number): Promise<TodoItem> {
+    const url = `${this.serverURL}/${id}`;
+    return this.httpClient.get<TodoItem>(url).toPromise();
   }
 
-  getAllItems() {
-    return [...this.itemsList];
+  async toggleItemStatus(id: number) {
+    const url = `${this.serverURL}/${id}/toggle`;
+    await this.httpClient.put<any>(url, '').toPromise();
   }
 
-  getActiveItems() {
-    return this.itemsList.filter((p) => !p.isCompleted);
-  }
-
-  addItem(caption: string, listId: number) {
-    this.itemsList.push();
-
-    const maxID = Math.max(...this.itemsList.map((o) => o.id), 0);
-
-    let itemToAdd: TodoItem = {
-      id: maxID + 1,
-      caption: caption,
-      listId: listId,
-      isCompleted: false,
+  addItem(item: TodoItem) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
     };
 
-    this.itemsList.push(itemToAdd);
+    let jsonItem = JSON.stringify(item);
+    return this.httpClient
+      .post<TodoItem>(this.serverURL, jsonItem, httpOptions)
+      .toPromise();
   }
 
-  markAsCompleted() {}
+  async deleteItemByID(id: number) {
+    const url = `${this.serverURL}/${id}`;
+    await this.httpClient.delete<any>(url).toPromise();
+  }
+
+  getItemscount(activeitems:boolean) {;
+    let url=this.serverURL;
+
+    if(activeitems){
+       url = `${this.serverURL}?activeItems=true`;
+    }
+
+    return this.httpClient
+      .get<TodoItem[]>(url)
+      .pipe(map(i => i.length))
+      .toPromise();
+  }
 }

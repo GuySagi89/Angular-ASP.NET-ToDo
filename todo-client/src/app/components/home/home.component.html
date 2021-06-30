@@ -23,8 +23,8 @@
 
 
   <div class="detail-blocks-container">
-    <app-detail-block title='Lists' icon='list' [amount]='listsAmount | async'></app-detail-block>
-    <app-detail-block title='Todo Items' icon='done_all' [amount]="0"></app-detail-block>
-    <app-detail-block title='Active Items' icon='hourglass_bottom' [amount]="0"></app-detail-block>
+    <app-detail-block title='Lists' icon='list' [amount]='listsAmount'></app-detail-block>
+    <app-detail-block title='Todo Items' icon='done_all' [amount]="itemsAmount"></app-detail-block>
+    <app-detail-block title='Active Items' icon='hourglass_bottom' [amount]="activeItemsAmount"></app-detail-block>
   </div>
 </div>

@@ -1,36 +1,36 @@
 <div class="container">
 
   <div class="caption">
-    <h1 [style.color]="currentList.color">{{currentList.caption}}</h1>
+    <h1 [style.color]="(currentList$|async)?.color">{{(currentList$|async)?.caption}}</h1>
   </div>
 
   <div class="details-actions-container">
 
     <div class="icon">
-      <mat-icon [style.color]="currentList.color">{{currentList.icon}}</mat-icon>
+      <mat-icon [style.color]="(currentList$|async)?.color">{{(currentList$|async)?.icon}}</mat-icon>
     </div>
 
-    <div class="description-actions" *ngIf="!(deletePrompt$|async)">
-      <div class="description">{{currentList.description}}</div>
+    <div class="description-actions" *ngIf="!(deleteConfirmPrompt$|async)">
+      <div class="description">{{(currentList$|async)?.description}}</div>
       <div class="button-container">
-        <button mat-raised-button color="primary" (click)="goToEditList(-1)">New List...</button>
-        <button mat-raised-button color="primary" (click)="goToEditList(currentList.id)">Edit...</button>
+        <button mat-raised-button color="primary" (click)="goToNewList()">New List...</button>
+        <button mat-raised-button color="primary" (click)="goToEditList()">Edit...</button>
         <button class='delete-button' mat-raised-button color="primary" (click)="toggleDelete()">Delete</button>
       </div>
     </div>
 
-    <div class="description-actions" *ngIf="(deletePrompt$|async)">
+    <div class="description-actions" *ngIf="(deleteConfirmPrompt$|async)">
       <div [style.color]="'red'" class="description">Are you sure you want to delete this entire list?</div>
       <div class="button-container">
         <button class='cancel-button' mat-raised-button color="primary" (click)="toggleDelete()">Cancel</button>
         <button class='delete-button' mat-raised-button color="primary"
-          (click)="deleteList(currentList.id)">Delete</button>
+          (click)="deleteList()">Delete</button>
       </div>
     </div>
   </div>
 
   <div class="todo-items-container">
-    <app-todo-item-presenter *ngFor="let item of currentTodoItems|async" [caption]="item.caption"
+    <app-todo-item-presenter *ngFor="let item of currentTodoItems" [caption]="item.caption" (checkChanged)="onCheck(item.id)"
       [isCompleted]="item.isCompleted">
     </app-todo-item-presenter>
   </div>

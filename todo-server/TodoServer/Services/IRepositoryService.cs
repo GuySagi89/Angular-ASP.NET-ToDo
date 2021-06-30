@@ -11,11 +11,11 @@ namespace TodoServer.Services
         Task DeleteItem(string itemId);
         Task DeleteList(string listId);
         Task EditList(TodoList list);
-        Task<List<TodoItem>> GetAllItems();
+        Task<List<TodoItem>> GetAllItems(bool activeItems);
         Task<List<TodoList>> GetAllLists();
         Task<TodoItem> GetItemById(string id);
         Task<TodoList> GetListById(string id);
-        Task<List<TodoItem>> GetListTodoItems(string listId);
+        Task<List<TodoItem>> GetListTodoItems(string listId,bool activeItems);
         Task ToggleItemStatus(string itemId);
     }
 }

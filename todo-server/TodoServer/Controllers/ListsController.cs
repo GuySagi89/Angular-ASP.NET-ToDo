@@ -8,8 +8,6 @@ namespace TodoServer.Controllers
 {
     [Route("api/lists")]
     [ApiController]
-
-
     public class ListsController : ControllerBase
     {
         private IRepositoryService _repo;
@@ -75,11 +73,12 @@ namespace TodoServer.Controllers
         }
 
         [HttpGet("{id}/items")]
-        public async Task<ActionResult<List<TodoItem>>> GetAllItemsByListId(string id)
+        public async Task<ActionResult<List<TodoItem>>> getAllListsItems(string id, [FromQuery] bool activeItems)
         {
             try
             {
-                var list = await _repo.GetListTodoItems(id);
+                
+                var list = await _repo.GetListTodoItems(id,activeItems);
                 return Ok(list);
             }
             catch

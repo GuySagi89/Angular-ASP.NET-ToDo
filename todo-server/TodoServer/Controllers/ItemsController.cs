@@ -18,11 +18,11 @@ namespace TodoServer.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TodoItem>>> GetAllItems()
+        public async Task<ActionResult<List<TodoItem>>> GetAllItems([FromQuery] bool activeItems)
         {
             try
             {
-                var allItems = await _repo.GetAllItems();
+                var allItems = await _repo.GetAllItems(activeItems);
                 return Ok(allItems);
             }
             catch
@@ -60,7 +60,7 @@ namespace TodoServer.Controllers
         }
 
         [HttpPut("{id}/toggle")]
-        public async Task<ActionResult> GetAllItemsByListId(string id)
+        public async Task<ActionResult> ToggleItemStatus(string id)
         {
             try
             {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { TodoItem } from 'src/app/core/models/todo-item.model';
 import { ItemsService } from 'src/app/core/services/items.service';
 
@@ -8,10 +9,14 @@ import { ItemsService } from 'src/app/core/services/items.service';
   styleUrls: ['./items.component.css'],
 })
 export class ItemsComponent implements OnInit {
-  allTodoItems!: TodoItem[];
+  allAciveTodoItems!: Observable<TodoItem[]>;
   constructor(private itemsService: ItemsService) {}
 
-  ngOnInit(): void {
-    this.allTodoItems = this.itemsService.getActiveItems();
+   ngOnInit() {
+    this.allAciveTodoItems = this.itemsService.getAllItems(true);
+  }
+
+  async onCheck(itemId:number){
+    await this.itemsService.toggleItemStatus(itemId);
   }
 }

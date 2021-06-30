@@ -1,9 +1,9 @@
 <div class="container">
 
   <div class="checkbox-container">
-    <mat-checkbox (change)='onCheck($event)' [checked]="isCompleted"></mat-checkbox>
+    <mat-checkbox (change)='onCheck()' [checked]="isCompleted"></mat-checkbox>
   </div>
 
-  <div [ngClass]="[isCompleted ? 'strike-through':'caption']"> {{caption}}</div>
+  <div [ngClass]="[(isComleted$|async) ? 'strike-through':'caption']"> {{caption}}</div>
 
 </div>

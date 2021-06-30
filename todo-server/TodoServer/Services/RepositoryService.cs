@@ -20,9 +20,14 @@ namespace TodoServer.Services
             return list.ToList();
         }
 
-        public async Task<List<TodoItem>> GetAllItems()
+        public async Task<List<TodoItem>> GetAllItems(bool activeItems)
         {
             var list = await _data.GetAllItems();
+
+            if (activeItems)
+            {
+                return list.Where(i => !i.IsCompleted).ToList();
+            }
             return list.ToList();
         }
         public async Task<TodoItem> GetItemById(string id)
@@ -40,7 +45,13 @@ namespace TodoServer.Services
         public async Task<TodoItem> AddNewItem(TodoItem item)
         {
             var todoItems = await _data.GetAllItems();
-            var maxId = todoItems.Max(i => i.Id);
+
+            var maxId = 0;
+
+            if (todoItems.Any())
+            {
+                maxId = todoItems.Max(i => i.Id);
+            }
 
             var actualItem = item with
             {
@@ -57,11 +68,18 @@ namespace TodoServer.Services
         public async Task<TodoList> AddNewList(TodoList list)
         {
             var todoLists = await _data.GetAllLists();
-            var maxId = todoLists.Max(l => l.Id);
+            var maxId = 0;
+
+            if (todoLists.Any())
+            {
+                maxId = todoLists.Max(l => l.Id);
+            }
+
             var actualList = list with
             {
                 Id = maxId + 1
             };
+
             var updatedTodoLists = todoLists.ToList();
             updatedTodoLists.Add(actualList);
 
@@ -125,9 +143,15 @@ namespace TodoServer.Services
             await _data.UpdateListsDB(updatedTodoLists.ToList());
         }
 
-        public async Task<List<TodoItem>> GetListTodoItems(string listId)
+        public async Task<List<TodoItem>> GetListTodoItems(string listId, bool activeItems)
         {
             var list = await _data.GetAllItems();
+            if (activeItems)
+            {
+                return list.
+                    Where(i => (i.ListId == int.Parse(listId)) && (i.IsCompleted))
+                    .ToList();
+            }
             return list.Where(l => l.ListId == int.Parse(listId)).ToList();
         }
     }
