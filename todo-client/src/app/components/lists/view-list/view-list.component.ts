@@ -23,7 +23,7 @@ import {
   templateUrl: './view-list.component.html',
   styleUrls: ['./view-list.component.css'],
 })
-export class ViewListComponent implements OnInit, OnDestroy {
+export class ViewListComponent implements OnInit {
   id!: number;
   id$!: Observable<number>;
   currentList!: TodoList;
@@ -35,8 +35,6 @@ export class ViewListComponent implements OnInit, OnDestroy {
   validList$!: Observable<boolean>;
   listUpdate!: Subscription;
   currentTodoItems!: TodoItem[];
-  currentListSubscriber!: Subscription;
-  currentItemsSubscriber!: Subscription;
 
   constructor(
     private listsService: ListsService,
@@ -49,29 +47,34 @@ export class ViewListComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.id = +this.route.snapshot.params['id'];
 
-    if (isNaN(this.id) || (this.id <= 0 && this.id !== NEW_LIST_ID)) {
-      this.router.navigate(['404']);
+    try {
+      if (isNaN(this.id) || (this.id <= 0 && this.id !== NEW_LIST_ID)) {
+        this.router.navigate(['404']);
+      }
+
+      this.id$ = this.route.params.pipe(map((params) => +params.id));
+
+      this.currentList$ = this.id$.pipe(
+        switchMap((id) => this.listsService.getListByID(id))
+      );
+
+      this.currentList = await this.currentList$.pipe(first()).toPromise();
+      if (!this.currentList) {
+        this.router.navigate(['404']);
+      }
+
+      this.reloadItems();
+
+      this.buildForm();
+    } catch (error) {
+      console.log(error);
     }
-
-    this.id$ = this.route.params.pipe(map((params) => +params.id));
-
-    this.currentList$ = this.id$.pipe(
-      switchMap((id) => this.listsService.getListByID(id))
-    );
-
-    this.currentListSubscriber = this.currentList$.subscribe(
-      (l) => (this.currentList = l)
-    );
-
-    this.currentTodoItems$ = this.id$.pipe(
-      switchMap((id) => this.listsService.getAllListsItems(id))
-    );
-
-    this.buildForm();
   }
 
-  ngOnDestroy(): void {
-    this.currentListSubscriber.unsubscribe();
+  reloadItems() {
+    this.listsService
+      .getAllListsItems(this.id)
+      .subscribe((i) => (this.currentTodoItems = i));
   }
 
   goToEditList() {
@@ -110,12 +113,16 @@ export class ViewListComponent implements OnInit, OnDestroy {
       isCompleted: false,
     };
 
-    await this.itemsService.addItem(newItem);
-    this.toDoForm.reset();
-
+    try {
+      await this.itemsService.addItem(newItem);
+      this.toDoForm.reset();
+      this.reloadItems();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async onCheck(itemId: number) {
-    await this.itemsService.toggleItemStatus(itemId);
+  onCheck(itemId: number) {
+    this.itemsService.toggleItemStatus(itemId);
   }
 }

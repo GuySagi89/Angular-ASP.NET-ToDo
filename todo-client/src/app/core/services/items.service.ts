@@ -30,7 +30,9 @@ export class ItemsService {
 
   async toggleItemStatus(id: number) {
     const url = `${this.serverURL}/${id}/toggle`;
+    try{
     await this.httpClient.put<any>(url, '').toPromise();
+    }catch(error){console.log(error)};
   }
 
   addItem(item: TodoItem) {
@@ -44,11 +46,6 @@ export class ItemsService {
     return this.httpClient
       .post<TodoItem>(this.serverURL, jsonItem, httpOptions)
       .toPromise();
-  }
-
-  async deleteItemByID(id: number) {
-    const url = `${this.serverURL}/${id}`;
-    await this.httpClient.delete<any>(url).toPromise();
   }
 
   getItemscount(activeitems:boolean) {;

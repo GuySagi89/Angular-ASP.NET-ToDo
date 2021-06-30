@@ -30,7 +30,7 @@
   </div>
 
   <div class="todo-items-container">
-    <app-todo-item-presenter *ngFor="let item of currentTodoItems$|async" [caption]="item.caption" (checkChanged)="onCheck(item.id)"
+    <app-todo-item-presenter *ngFor="let item of currentTodoItems" [caption]="item.caption" (checkChanged)="onCheck(item.id)"
       [isCompleted]="item.isCompleted">
     </app-todo-item-presenter>
   </div>

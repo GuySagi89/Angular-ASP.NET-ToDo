@@ -42,7 +42,11 @@ export class ListsService {
 
   async deleteListByID(id: number) {
     const url = `${this.serverURL}/${id}`;
-    await this.httpClient.delete<any>(url).toPromise();
+    try {
+      await this.httpClient.delete<any>(url).toPromise();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async editList(list: TodoList) {

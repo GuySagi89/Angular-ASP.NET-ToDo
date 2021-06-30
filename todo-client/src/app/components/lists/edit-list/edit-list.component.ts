@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import {
@@ -32,8 +32,8 @@ export class EditListComponent implements OnInit {
   icons = ICONS;
   colors = COLORS;
   id$!: Observable<number>;
-selectedIcon!:string;
-selectedColor!:string;
+  selectedIcon!: string;
+  selectedColor!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,24 +46,30 @@ selectedColor!:string;
     this.currentList = EMPTY_LIST;
 
     this.id = +this.route.snapshot.params['id'];
+    try {
+      if (isNaN(this.id) || (this.id <= 0 && this.id !== -1)) {
+        this.router.navigate(['404']);
+      }
 
-    if (isNaN(this.id) || (this.id <= 0 && this.id !== -1)) {
-      this.router.navigate(['404']);
-    }
+      if (this.id !== NEW_LIST_ID) {
+        this.id$ = this.route.params.pipe(map((params) => +params.id));
 
-    if (this.id !== -1) {
-      this.id$ = this.route.params.pipe(map((params) => +params.id));
+        this.currentList$ = this.id$.pipe(
+          switchMap((id) => this.listsService.getListByID(id))
+        );
 
-      this.currentList$ = this.id$.pipe(
-        switchMap((id) => this.listsService.getListByID(id))
-      );
+        this.currentList = await this.currentList$.pipe(first()).toPromise();
 
-      this.currentList = await this.currentList$.pipe(first()).toPromise();
-      this.selectedIcon=this.currentList.icon;
-      this.selectedColor=this.currentList.color;
-    }
+        if(!this.currentList){
+          this.router.navigate(['404']);
+        }
 
-    this.handleForm();
+        this.selectedIcon = this.currentList.icon;
+        this.selectedColor = this.currentList.color;
+      }
+
+      this.handleForm();
+    } catch(error) {      console.log(error);}
   }
 
   handleForm() {
@@ -86,15 +92,17 @@ selectedColor!:string;
   }
 
   async saveForm() {
-    if (this.todoForm.invalid) return;
+    try {
+      if (this.todoForm.invalid) return;
 
-    this.currentList = { ...this.currentList, ...this.todoForm.value };
-    if (this.id === NEW_LIST_ID) {
-      await this.listsService.addList(this.currentList);
-    } else {
-      await this.listsService.editList(this.currentList);
-    }
+      this.currentList = { ...this.currentList, ...this.todoForm.value };
+      if (this.id === NEW_LIST_ID) {
+        await this.listsService.addList(this.currentList);
+      } else {
+        await this.listsService.editList(this.currentList);
+      }
 
-    this.router.navigate(['lists']);
+      this.router.navigate(['lists']);
+    } catch (error) {}
   }
 }

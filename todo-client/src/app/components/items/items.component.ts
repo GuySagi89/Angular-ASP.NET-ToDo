@@ -9,14 +9,18 @@ import { ItemsService } from 'src/app/core/services/items.service';
   styleUrls: ['./items.component.css'],
 })
 export class ItemsComponent implements OnInit {
-  allAciveTodoItems!: Observable<TodoItem[]>;
+  allAciveTodoItems$!: Observable<TodoItem[]>;
   constructor(private itemsService: ItemsService) {}
 
    ngOnInit() {
-    this.allAciveTodoItems = this.itemsService.getAllItems(true);
+    this.allAciveTodoItems$ = this.itemsService.getAllItems(true);
   }
 
   async onCheck(itemId:number){
+    try{
     await this.itemsService.toggleItemStatus(itemId);
+    }catch(error){
+      console.log(error);
+    }
   }
 }
